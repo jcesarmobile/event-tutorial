@@ -52,7 +52,14 @@ export class ProfilePage {
         {
           text: 'Save',
           handler: data => {
-            this.profileProvider.updateName(data.firstName, data.lastName);
+            let firstName = data.firstName;
+            let lastName = data.lastName;
+            
+            this.profileProvider.updateName(data.firstName, data.lastName)
+            .then( data => {
+              this.userProfile.firstName = firstName;
+              this.userProfile.lastName = lastName;
+            });
           }
         }
       ]
@@ -84,7 +91,13 @@ export class ProfilePage {
         {
           text: 'Save',
           handler: data => {
-            this.profileProvider.updateEmail(data.newEmail, data.password);
+            let newEmail = data.newEmail;
+
+            this.profileProvider.updateEmail(data.newEmail, data.password).then( () =>{
+              this.userProfile.email = newEmail;
+            }).catch(error => {
+              console.log('ОШИБКА: '+error.message);
+            });
           }
         }
       ]
