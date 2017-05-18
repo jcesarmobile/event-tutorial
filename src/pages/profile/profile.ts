@@ -96,7 +96,7 @@ export class ProfilePage {
             this.profileProvider.updateEmail(data.newEmail, data.password).then( () =>{
               this.userProfile.email = newEmail;
             }).catch(error => {
-              console.log('ОШИБКА: '+error.message);
+              console.log('ERROR: '+error.message);
             });
           }
         }
