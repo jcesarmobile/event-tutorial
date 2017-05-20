@@ -34,7 +34,7 @@ export class ProfileProvider {
     const credential =  firebase.auth.EmailAuthProvider
     .credential(firebase.auth().currentUser.email, password);
 
-    return firebase.auth().currentUser.reauthenticate(credential).then( user => {
+    return firebase.auth().currentUser.reauthenticateWithCredential(credential).then( user => {
       firebase.auth().currentUser.updateEmail(newEmail).then( user => {
         firebase.database().ref('/userProfile').child(firebase.auth().currentUser.uid)
           .update({ email: newEmail });
@@ -46,7 +46,7 @@ export class ProfileProvider {
     const credential =  firebase.auth.EmailAuthProvider
       .credential(firebase.auth().currentUser.email, oldPassword);
 
-    return firebase.auth().currentUser.reauthenticate(credential).then( user => {
+    return firebase.auth().currentUser.reauthenticateWithCredential(credential).then( user => {
       firebase.auth().currentUser.updatePassword(newPassword).then( user => {
         console.log("Password Changed");
       }, error => {
