@@ -11,16 +11,16 @@ import { AuthProvider } from '../../providers/auth/auth';
   templateUrl: 'profile.html',
 })
 export class ProfilePage {
-  public userProfile: any;
-  public birthDate: string;
+  public userProfile:any;
+  public birthDate:string;
 
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, 
     public profileProvider: ProfileProvider, public authProvider: AuthProvider) {}
 
   ionViewDidEnter() {
-    this.profileProvider.getUserProfile().then( profileSnap => {
-      this.userProfile = profileSnap;
-      this.birthDate = this.userProfile.birthDate;
+    this.profileProvider.getUserProfile().on('value', userProfileSnapshot => {
+      this.userProfile = userProfileSnapshot.val();
+      this.birthDate = userProfileSnapshot.val().birthDate;
     });
   }
 
@@ -52,14 +52,7 @@ export class ProfilePage {
         {
           text: 'Save',
           handler: data => {
-            let firstName = data.firstName;
-            let lastName = data.lastName;
-            
-            this.profileProvider.updateName(data.firstName, data.lastName)
-            .then( data => {
-              this.userProfile.firstName = firstName;
-              this.userProfile.lastName = lastName;
-            });
+            this.profileProvider.updateName(data.firstName, data.lastName);
           }
         }
       ]

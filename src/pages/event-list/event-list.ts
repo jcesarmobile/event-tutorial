@@ -15,8 +15,17 @@ export class EventListPage {
   constructor(public navCtrl: NavController, public eventProvider: EventProvider) {}
 
   ionViewDidEnter() {
-    this.eventProvider.getEventList().then( eventListSnap => {
-      this.eventList = eventListSnap;
+    this.eventProvider.getEventList().on('value', snapshot => {
+      this.eventList = [];
+      snapshot.forEach( snap => {
+        this.eventList.push({
+          id: snap.key,
+          name: snap.val().name,
+          price: snap.val().price,
+          date: snap.val().date,
+        });
+        return false
+      });
     });
   }
 

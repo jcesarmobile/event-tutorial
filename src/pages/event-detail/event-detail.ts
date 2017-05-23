@@ -12,16 +12,18 @@ import { Camera } from '@ionic-native/camera';
   templateUrl: 'event-detail.html',
 })
 export class EventDetailPage {
-  public currentEvent: any;
-  public guestName: string = '';
-  public guestPicture: string = null;
+  public currentEvent: any = {};
+  public guestName:string = '';
+  public guestPicture:string = null;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, 
     public eventProvider: EventProvider, public cameraPlugin: Camera) {}
 
     ionViewDidEnter(){
-      this.eventProvider.getEventDetail(this.navParams.get('eventId')).then( eventSnap => {
-        this.currentEvent = eventSnap;
+      this.eventProvider.getEventDetail(this.navParams.get('eventId'))
+      .on('value', eventSnapshot => {
+        this.currentEvent = eventSnapshot.val();
+        this.currentEvent.id = eventSnapshot.key;
       });
     }
 

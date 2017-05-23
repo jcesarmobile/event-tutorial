@@ -13,40 +13,12 @@ export class EventProvider {
     })
   }
 
-  getEventList(): Promise<any> {
-    return new Promise( (resolve, reject) => {
-      firebase.database().ref(`userProfile/${this.userId}/eventList`)
-      .on('value', snapshot => {
-        let rawList = [];
-        snapshot.forEach( snap => {
-          rawList.push({
-            id: snap.key,
-            name: snap.val().name,
-            price: snap.val().price,
-            date: snap.val().date,
-          });
-        return false
-        });
-        resolve(rawList);
-      });
-    });
-
+  getEventList(): firebase.database.Reference {
+    return firebase.database().ref(`userProfile/${this.userId}/eventList`);
   }
 
-  getEventDetail(eventId): Promise<any> {
-    return new Promise( (resolve, reject) => {
-      firebase.database().ref(`userProfile/${this.userId}/eventList`)
-      .child(eventId).on('value', snapshot => {
-        resolve({
-          id: snapshot.key,
-          name: snapshot.val().name,
-          date: snapshot.val().date,
-          price: snapshot.val().price,
-          cost: snapshot.val().cost,
-          revenue: snapshot.val().revenue
-        });
-      });
-    });
+  getEventDetail(eventId): firebase.database.Reference {
+    return firebase.database().ref(`userProfile/${this.userId}/eventList`).child(eventId);
   }
 
   createEvent(eventName: string, eventDate: string, eventPrice: number, 
