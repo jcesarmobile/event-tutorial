@@ -7,15 +7,18 @@ export class ProfileProvider {
   public currentUser:firebase.User;
   
   constructor() {
+    this.currentUser = firebase.auth().currentUser;
+
     this.userProfile = firebase.database().ref('/userProfile')
       .child(firebase.auth().currentUser.uid);
+
   }
 
   getUserProfile(): firebase.database.Reference {
     return this.userProfile;
   }
 
-  updateName(firstName: string, lastName: string): firebase.Promise<any> {
+  updateName(firstName: string, lastName: string): firebase.Promise<void> {
     return this.userProfile.update({
       firstName: firstName,
       lastName: lastName,

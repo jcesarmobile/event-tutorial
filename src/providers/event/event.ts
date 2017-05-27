@@ -3,27 +3,22 @@ import firebase from 'firebase';
 
 @Injectable()
 export class EventProvider {
-  public userId:string;
-  
+  public userProfileRef:firebase.database.Reference;
   constructor() {
-    firebase.auth().onAuthStateChanged( user => {
-      if (user){
-        this.userId = user.uid;
-      }
-    })
+    this.userProfileRef = firebase.database().ref(`userProfile/${firebase.auth().currentUser.uid}`);
   }
 
   getEventList(): firebase.database.Reference {
-    return firebase.database().ref(`userProfile/${this.userId}/eventList`);
+    return this.userProfileRef.child('/eventList');
   }
 
-  getEventDetail(eventId): firebase.database.Reference {
-    return firebase.database().ref(`userProfile/${this.userId}/eventList`).child(eventId);
+  getEventDetail(eventId:string): firebase.database.Reference {
+    return this.userProfileRef.child('/eventList').child(eventId);
   }
 
   createEvent(eventName: string, eventDate: string, eventPrice: number, 
     eventCost: number): firebase.Promise<any> {
-    return firebase.database().ref(`userProfile/${this.userId}/eventList`).push({
+    return this.userProfileRef.child('/eventList').push({
       name: eventName,
       date: eventDate,
       price: eventPrice * 1,
@@ -33,12 +28,12 @@ export class EventProvider {
   }
 
   addGuest(guestName, eventId, eventPrice, guestPicture = null): firebase.Promise<any> {
-    return firebase.database().ref(`userProfile/${this.userId}/eventList`)
-    .child(eventId).child('guestList').push({
+    return this.userProfileRef.child('/eventList').child(eventId).child('guestList')
+    .push({
       guestName: guestName
-    }).then((newGuest) => {
-      firebase.database().ref(`userProfile/${this.userId}/eventList`)
-      .child(eventId).transaction( event => {
+    })
+    .then((newGuest) => {
+      this.userProfileRef.child('/eventList').child(eventId).transaction( event => {
         event.revenue += eventPrice;
         return event;
       });
@@ -46,9 +41,8 @@ export class EventProvider {
         firebase.storage().ref('/guestProfile/').child(newGuest.key)
         .child('profilePicture.png').putString(guestPicture, 'base64', {contentType: 'image/png'})
         .then((savedPicture) => {
-          firebase.database().ref(`userProfile/${this.userId}/eventList`)
-          .child(eventId).child('guestList').child(newGuest.key).child('profilePicture')
-          .set(savedPicture.downloadURL);
+          this.userProfileRef.child('/eventList').child(eventId).child('guestList')
+          .child(newGuest.key).child('profilePicture').set(savedPicture.downloadURL);
         });        
       }
     });

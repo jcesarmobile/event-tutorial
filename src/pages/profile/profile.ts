@@ -24,14 +24,14 @@ export class ProfilePage {
     });
   }
 
-  logOut(){
+  logOut(): void {
     this.authProvider.logoutUser().then(() => {
       this.navCtrl.setRoot('login');
     });
   }
 
   updateName(){
-    let alert = this.alertCtrl.create({
+    const alert = this.alertCtrl.create({
       message: "Your first name & last name",
       inputs: [
         {
