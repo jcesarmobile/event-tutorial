@@ -22,11 +22,13 @@ export class MyApp {
       messagingSenderId: "904481277327"
     });
 
-    firebase.auth().onAuthStateChanged((user) => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         this.rootPage = 'login';
+        unsubscribe();
       } else { 
         this.rootPage = HomePage;
+        unsubscribe();
       }
     });
 
