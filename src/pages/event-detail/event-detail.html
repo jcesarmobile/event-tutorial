@@ -41,7 +41,8 @@
           Take a Picture
         </button>
 
-        <button ion-button color="primary" block (click)="addGuest(guestName)">
+        <button ion-button color="primary" block (click)="addGuest(guestName)"
+          [disabled]="!guestName">
           Add Guest
         </button>
       </ion-list>
