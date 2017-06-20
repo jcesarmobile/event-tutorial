@@ -8,8 +8,10 @@ export class ProfileProvider {
   
   constructor() {
     firebase.auth().onAuthStateChanged( user => {
-      this.currentUser = user;
-      this.userProfile = firebase.database().ref('/userProfile').child(user.uid);
+      if (user){
+        this.currentUser = user;
+        this.userProfile = firebase.database().ref('/userProfile').child(user.uid);
+      }
     });
   }
 

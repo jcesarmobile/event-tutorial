@@ -6,7 +6,11 @@ export class EventProvider {
   public userProfileRef:firebase.database.Reference;
   constructor() {
     firebase.auth().onAuthStateChanged( user => {
-      this.userProfileRef = firebase.database().ref(`userProfile/${user.uid}`);
+      if (user) {
+        this.userProfileRef = firebase.database().ref(`userProfile/${user.uid}`);
+      } else {
+        this.userProfileRef = null;
+      }
     });
   }
 
