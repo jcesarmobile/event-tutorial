@@ -5,7 +5,9 @@ import firebase from 'firebase';
 export class EventProvider {
   public userProfileRef:firebase.database.Reference;
   constructor() {
-    this.userProfileRef = firebase.database().ref(`userProfile/${firebase.auth().currentUser.uid}`);
+    firebase.auth().onAuthStateChanged( user => {
+      this.userProfileRef = firebase.database().ref(`userProfile/${user.uid}`);
+    });
   }
 
   getEventList(): firebase.database.Reference {
@@ -28,8 +30,8 @@ export class EventProvider {
   }
 
   addGuest(guestName, eventId, eventPrice, guestPicture = null): firebase.Promise<any> {
-    return this.userProfileRef.child('/eventList').child(eventId).child('guestList')
-    .push({
+    return this.userProfileRef.child('/eventList').child(eventId)
+    .child('guestList').push({
       guestName: guestName
     })
     .then((newGuest) => {

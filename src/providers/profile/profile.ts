@@ -7,11 +7,10 @@ export class ProfileProvider {
   public currentUser:firebase.User;
   
   constructor() {
-    this.currentUser = firebase.auth().currentUser;
-
-    this.userProfile = firebase.database().ref('/userProfile')
-      .child(firebase.auth().currentUser.uid);
-
+    firebase.auth().onAuthStateChanged( user => {
+      this.currentUser = user;
+      this.userProfile = firebase.database().ref('/userProfile').child(user.uid);
+    });
   }
 
   getUserProfile(): firebase.database.Reference {
@@ -33,7 +32,7 @@ export class ProfileProvider {
 
   updateEmail(newEmail: string, password: string): firebase.Promise<any> {
     const credential =  firebase.auth.EmailAuthProvider
-    .credential(this.currentUser.email, password);
+      .credential(this.currentUser.email, password);
 
     return this.currentUser.reauthenticateWithCredential(credential).then( user => {
       this.currentUser.updateEmail(newEmail).then( user => {
