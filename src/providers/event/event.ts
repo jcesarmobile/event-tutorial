@@ -8,8 +8,6 @@ export class EventProvider {
     firebase.auth().onAuthStateChanged( user => {
       if (user) {
         this.userProfileRef = firebase.database().ref(`userProfile/${user.uid}`);
-      } else {
-        this.userProfileRef = null;
       }
     });
   }
